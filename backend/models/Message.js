@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema(
   {
-    chatId: {
+    chat: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Chat",
       required: true,
@@ -41,3 +41,4 @@ const messageSchema = new mongoose.Schema(
 );
 
 export default mongoose.model("Message", messageSchema);
+

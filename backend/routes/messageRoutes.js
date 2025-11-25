@@ -1,10 +1,16 @@
 import express from "express";
 import { protect } from "../middlewares/authMiddleware.js";
-import { sendMessage, getMessages } from "../controllers/messageController.js";
+import upload from "../middlewares/uploadMiddleware.js";
+import { getChatMessages, sendMessage, markAsSeen } from "../controllers/messageController.js";
 
 const router = express.Router();
 
-router.post("/", protect, sendMessage);
-router.get("/:chatId", protect, getMessages);
+router.use(protect);
+
+router.get("/chat/:chatId", getChatMessages);
+
+router.post("/send", upload.single("file"), sendMessage);
+
+router.put("/seen/:messageId", markAsSeen);
 
 export default router;
