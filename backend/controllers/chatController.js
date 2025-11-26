@@ -269,29 +269,34 @@ export const updateGroupProfilePic = async (req, res) => {
       return res.status(400).json({ message: "chatId is required" });
 
     const chat = await Chat.findById(chatId);
-
     if (!chat) return res.status(404).json({ message: "Chat not found" });
-    if (!chat.isGroupChat) return res.status(400).json({ message: "This is not a group chat" });
+    if (!chat.isGroupChat) return res.status(400).json({ message: "Not a group chat" });
 
-    // only admin can update profile picture
     if (chat.groupAdmin.toString() !== myId.toString()) {
-      return res.status(403).json({ message: "Only group admin can update profile picture" });
+      return res.status(403).json({ message: "Only admin can update group picture" });
     }
 
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    // Assuming chat model has a field 'groupProfilePic'
-    chat.groupProfilePic  = req.file.path; // or wherever the file is stored
-    await chat.save();
+    // Upload file buffer to Cloudinary
+    cloudinary.uploader
+      .upload_stream({ folder: "group_pics" }, async (error, result) => {
+        if (error) return res.status(500).json({ message: "Cloudinary upload failed" });
 
-    const updatedChat = await Chat.findById(chatId)
-      .populate("users", "name email profilePic")
-      .populate("groupAdmin", "name email profilePic")
-      .populate("latestMessage");
+        chat.groupProfilePic = result.secure_url;
+        await chat.save();
 
-    res.json({ chat: {...updatedChat.toObject(), messages: []} });
+        const updatedChat = await Chat.findById(chatId)
+          .populate("users", "name email profilePic")
+          .populate("groupAdmin", "name email profilePic")
+          .populate("latestMessage");
+
+        res.json({ chat: { ...updatedChat.toObject(), messages: [] } });
+      })
+      .end(req.file.buffer);
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
