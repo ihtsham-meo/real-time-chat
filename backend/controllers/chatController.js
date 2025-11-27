@@ -1,6 +1,8 @@
 // controllers/chatController.js
 import Chat from "../models/Chat.js";
 import User from "../models/User.js";
+import uploadToCloudinary from "../config/cloudinary.js";
+
 
 export const createOrGetChat = async (req, res) => {
   try {
@@ -280,22 +282,21 @@ export const updateGroupProfilePic = async (req, res) => {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    // Upload file buffer to Cloudinary
-    cloudinary.uploader
-      .upload_stream({ folder: "group_pics" }, async (error, result) => {
-        if (error) return res.status(500).json({ message: "Cloudinary upload failed" });
+    // Upload file buffer to Cloudinary using helper
+    try {
+      const url = await uploadToCloudinary(req.file.buffer, "group_pics", "image");
+      chat.groupProfilePic = url;
+      await chat.save();
 
-        chat.groupProfilePic = result.secure_url;
-        await chat.save();
+      const updatedChat = await Chat.findById(chatId)
+        .populate("users", "name email profilePic")
+        .populate("groupAdmin", "name email profilePic")
+        .populate("latestMessage");
 
-        const updatedChat = await Chat.findById(chatId)
-          .populate("users", "name email profilePic")
-          .populate("groupAdmin", "name email profilePic")
-          .populate("latestMessage");
-
-        res.json({ chat: { ...updatedChat.toObject(), messages: [] } });
-      })
-      .end(req.file.buffer);
+      res.json({ chat: { ...updatedChat.toObject(), messages: [] } });
+    } catch (err) {
+      return res.status(500).json({ message: "Cloudinary upload failed" });
+    }
 
   } catch (err) {
     res.status(500).json({ message: err.message });

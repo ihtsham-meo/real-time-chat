@@ -1,7 +1,9 @@
+//backend/controllers/messageController.js
 import Chat from "../models/Chat.js";
 import Message from "../models/Message.js";
 import uploadToCloudinary from "../config/cloudinary.js";
 import mongoose from "mongoose";
+
 
 export const getChatMessages = async (req, res) => {
   try {

@@ -10,6 +10,7 @@ const chatSchema = new mongoose.Schema(
     groupName: { type: String }, // only for group chats
     groupAdmin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     latestMessage: { type: mongoose.Schema.Types.ObjectId, ref: "Message" },
+    groupProfilePic: { type: String, default: "" },
   },
   { timestamps: true }
 );
