@@ -5,18 +5,37 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import { parse as parseCookie } from "cookie";
 import connectDB from "./config/db.js";
+import validateEnv from "./config/validateEnv.js";
 import jwt from "jsonwebtoken";
 import authRoutes from "./routes/authRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import Chat from "./models/Chat.js";
 import Message from "./models/Message.js";
 import chatRoutes from "./routes/chatRoutes.js";
+import errorHandler from "./middlewares/errorHandler.js";
 
 dotenv.config();
+validateEnv(); // Validate environment variables at startup
 connectDB();
 
 const app = express();
+
+// Security middleware
+app.use(helmet());
+
+// Rate limiting for auth routes
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 requests per windowMs
+  message: "Too many requests from this IP, please try again later.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -28,9 +47,16 @@ app.use(
 
 app.get("/", (req, res) => res.send("Chat App Backend Running..."));
 
+// Apply rate limiting to auth routes
+app.use("/api/auth/register", authLimiter);
+app.use("/api/auth/login", authLimiter);
+
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/chats", chatRoutes);
+
+// Error handler middleware (must be last)
+app.use(errorHandler);
 
 // create HTTP server & socket server
 const httpServer = createServer(app);
@@ -41,17 +67,15 @@ const io = new Server(httpServer, {
   },
 });
 
-// helper: verify token from cookie header
+// helper: verify token from cookie header using cookie package
 const getUserIdFromSocket = (socket) => {
   try {
-    // cookie string is in socket.handshake.headers.cookie
-    const cookie = socket.handshake.headers?.cookie;
-    if (!cookie) return null;
+    const cookieHeader = socket.handshake.headers?.cookie;
+    if (!cookieHeader) return null;
 
-    // simple parse, find token=...
-    const tokenCookie = cookie.split(";").map(c => c.trim()).find(c => c.startsWith("jwt="));
-    if (!tokenCookie) return null;
-    const token = tokenCookie.split("=")[1];
+    // Parse cookies using the cookie package
+    const cookies = parseCookie(cookieHeader);
+    const token = cookies.jwt;
     if (!token) return null;
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
