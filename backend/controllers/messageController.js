@@ -20,7 +20,7 @@ export const getChatMessages = asyncHandler(async (req, res) => {
 
   const [messages, totalCount] = await Promise.all([
     Message.find({ chat: chatId })
-      .populate("sender", "name email profilePic")
+      .populate("sender", "name username email profilePic")
       .sort({ createdAt: -1 }) // Most recent first
       .skip(skip)
       .limit(limit),
@@ -84,7 +84,7 @@ export const sendMessage = asyncHandler(async (req, res) => {
 
   const fullMessage = await Message.findById(message._id).populate(
     "sender",
-    "name email profilePic"
+    "name username email profilePic"
   );
 
   // respond

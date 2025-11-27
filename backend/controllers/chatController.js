@@ -12,7 +12,7 @@ export const createOrGetChat = asyncHandler(async (req, res) => {
   let chat = await Chat.findOne({
     isGroupChat: false,
     $and: [{ users: { $elemMatch: { $eq: myId } } }, { users: { $elemMatch: { $eq: userId } } }],
-  }).populate("users", "name email profilePic").populate("latestMessage");
+  }).populate("users", "name username email profilePic").populate("latestMessage");
 
   if (chat) return res.json({ chat });
 
@@ -22,14 +22,14 @@ export const createOrGetChat = asyncHandler(async (req, res) => {
     users: [myId, userId],
   });
 
-  const fullChat = await Chat.findById(newChat._id).populate("users", "name email profilePic");
+  const fullChat = await Chat.findById(newChat._id).populate("users", "name username email profilePic");
   res.status(201).json({ chat: fullChat });
 });
 
 export const getMyChats = asyncHandler(async (req, res) => {
   const myId = req.user._id;
   const chats = await Chat.find({ users: { $elemMatch: { $eq: myId } } })
-    .populate("users", "name email profilePic")
+    .populate("users", "name username email profilePic")
     .populate("latestMessage")
     .sort({ updatedAt: -1 });
   res.json({ chats });
@@ -70,8 +70,8 @@ export const createGroupChat = asyncHandler(async (req, res) => {
   });
 
   const fullGroupChat = await Chat.findById(groupChat._id)
-    .populate("users", "name email profilePic")
-    .populate("groupAdmin", "name email profilePic")
+    .populate("users", "name username email profilePic")
+    .populate("groupAdmin", "name username email profilePic")
     .populate("latestMessage");
 
   res.status(201).json({ chat: { ...fullGroupChat.toObject(), messages: [] } });
@@ -113,8 +113,8 @@ export const addUserToGroup = asyncHandler(async (req, res) => {
   await chat.save();
 
   const updatedChat = await Chat.findById(chatId)
-    .populate("users", "name email profilePic")
-    .populate("groupAdmin", "name email profilePic")
+    .populate("users", "name username email profilePic")
+    .populate("groupAdmin", "name username email profilePic")
     .populate("latestMessage");
 
   res.json({ chat: { ...updatedChat.toObject(), messages: [] } });
@@ -157,8 +157,8 @@ export const removeUserFromGroup = asyncHandler(async (req, res) => {
   await chat.save();
 
   const updatedChat = await Chat.findById(chatId)
-    .populate("users", "name email profilePic")
-    .populate("groupAdmin", "name email profilePic")
+    .populate("users", "name username email profilePic")
+    .populate("groupAdmin", "name username email profilePic")
     .populate("latestMessage");
 
   res.json({ chat: { ...updatedChat.toObject(), messages: [] } });
@@ -229,8 +229,8 @@ export const renameGroup = asyncHandler(async (req, res) => {
   await chat.save();
 
   const updatedChat = await Chat.findById(chatId)
-    .populate("users", "name email profilePic")
-    .populate("groupAdmin", "name email profilePic")
+    .populate("users", "name username email profilePic")
+    .populate("groupAdmin", "name username email profilePic")
     .populate("latestMessage");
 
   res.json({ chat: { ...updatedChat.toObject(), messages: [] } });
@@ -308,8 +308,8 @@ export const updateGroupProfilePic = asyncHandler(async (req, res) => {
   await chat.save();
 
   const updatedChat = await Chat.findById(chatId)
-    .populate("users", "name email profilePic")
-    .populate("groupAdmin", "name email profilePic")
+    .populate("users", "name username email profilePic")
+    .populate("groupAdmin", "name username email profilePic")
     .populate("latestMessage");
 
   res.json({ chat: { ...updatedChat.toObject(), messages: [] } });

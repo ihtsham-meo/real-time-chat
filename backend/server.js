@@ -130,7 +130,7 @@ io.on("connection", (socket) => {
 
       const fullMessage = await Message.findById(message._id).populate(
         "sender",
-        "name email profilePic"
+        "name username email profilePic"
       );
 
       // emit to everyone in chat room

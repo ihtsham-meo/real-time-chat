@@ -30,6 +30,13 @@
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "@types/jest": "^30.0.0",
+    "form-data": "^4.0.5",
+    "jest": "^30.2.0",
+    "mongodb-memory-server": "^10.3.0",
+    "node-fetch": "^3.3.2",
+    "nodemon": "^3.1.11",
+    "socket.io-client": "^4.8.1",
+    "supertest": "^7.1.4"
   }
 }
