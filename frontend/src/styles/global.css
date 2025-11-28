@@ -1,0 +1,46 @@
+:root{
+  --bg-black: #0E0E0E;
+  --dark: #1A1A1A;
+  --cream: #F5EDE0;
+  --gold: #D4AF37;
+  --muted: #2A2A2A;
+}
+
+/* reset */
+* { box-sizing: border-box; }
+html,body,#root { height: 100%; margin:0; font-family: Inter, Roboto, system-ui, sans-serif; background:var(--bg-black); color:var(--cream); }
+
+/* layout */
+.app-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  height: 100vh;
+}
+
+/* sidebar */
+.sidebar { background: var(--dark); border-right: 1px solid var(--muted); padding: 12px; display:flex; flex-direction:column; }
+.sidebar-header { font-weight:700; font-size:18px; margin-bottom:12px; color:var(--cream); }
+.chat-list { overflow:auto; }
+.chat-item { padding:10px; border-radius:8px; cursor:pointer; margin-bottom:8px; background:transparent; transition: background .15s; }
+.chat-item:hover { background:#121212; }
+.chat-name { font-weight:600; color:var(--cream); }
+.last-msg { font-size:12px; color:#9a9a9a; margin-top:6px; }
+
+/* chat area */
+.chat-area { display:flex; flex-direction:column; background: linear-gradient(180deg, #0E0E0E 0%, #0B0B0B 100%); }
+.messages-wrapper { flex:1; padding:18px; overflow:auto; }
+
+/* message bubble */
+.message-bubble { max-width:60%; margin-bottom:12px; background:var(--dark); padding:10px; border-radius:12px; }
+.message-bubble .meta { font-size:12px; color:#bdb6a8; display:flex; justify-content:space-between; margin-bottom:6px; }
+.message-image { max-width:100%; border-radius:8px; }
+
+/* input */
+.message-input { padding:12px; border-top:1px solid var(--muted); }
+.input-row { display:flex; gap:8px; align-items:center; }
+.text-input { flex:1; padding:10px; border-radius:12px; background:var(--dark); border:1px solid #222; color:var(--cream); }
+.send-btn { background:var(--gold); border:none; padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:600; }
+
+/* previews */
+.preview { padding:8px; background:#161616; margin-bottom:8px; border-radius:8px; display:flex; gap:8px; align-items:center; }
+.preview img, .preview video { height:80px; border-radius:6px; }
