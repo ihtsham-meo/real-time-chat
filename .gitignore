@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Cache folders
+.cache
+
+# Explicit double-star node_modules ignore
+**/node_modules
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
