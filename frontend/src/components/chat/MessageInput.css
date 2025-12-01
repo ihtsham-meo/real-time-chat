@@ -1,0 +1,110 @@
+/* Message Input Styles */
+.message-input-container {
+    border-top: 1px solid var(--muted);
+    background: var(--dark);
+    padding: 16px 20px;
+}
+
+.file-preview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: var(--cream);
+}
+
+.remove-file {
+    background: transparent;
+    border: none;
+    color: #ff6b6b;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 4px;
+    transition: transform 0.2s ease;
+}
+
+.remove-file:hover {
+    transform: scale(1.2);
+}
+
+.message-input-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.attach-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--cream);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.attach-btn:hover {
+    background: rgba(212, 175, 55, 0.15);
+}
+
+.text-input {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 24px;
+    border: 1px solid var(--muted);
+    background: rgba(42, 42, 42, 0.5);
+    color: var(--cream);
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.text-input:focus {
+    border-color: var(--gold);
+    background: rgba(42, 42, 42, 0.8);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.text-input::placeholder {
+    color: #666;
+}
+
+.text-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.send-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, var(--gold) 0%, #c9a236 100%);
+    color: #0E0E0E;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.send-btn:hover:not(:disabled) {
+    box-shadow: 0 6px 16px rgba(212, 175, 55, 0.4);
+}
+
+.send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
